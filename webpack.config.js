@@ -1,4 +1,5 @@
-var webpackServer = 'http://localhost:8080';
+var webpackServer = 'http://localhost:8080/';
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -6,6 +7,10 @@ module.exports = {
       'webpack-dev-server/client?' + webpackServer,
       'webpack/hot/only-dev-server',
       './js/index.js',
+    ],
+    styles: [
+      'webpack/hot/only-dev-server',
+      './css/main.scss',
     ]
   },
   output: {
@@ -13,12 +18,22 @@ module.exports = {
     filename: 'public/[name].js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         loaders: ['react-hot-loader/webpack', 'babel-loader'],
         exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader!sass-loader'
+        })
       }
     ]
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin('public/styles.css')
+  ]
 };
